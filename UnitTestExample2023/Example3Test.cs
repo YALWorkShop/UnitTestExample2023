@@ -1,5 +1,7 @@
 using NSubstitute;
 using System;
+using ExpectedObjects;
+using NSubstitute.ExceptionExtensions;
 
 namespace UnitTestExample2023;
 
@@ -18,12 +20,26 @@ public class Tests
         IMemberDao memberDao = Substitute.For<IMemberDao>();
         var example3 = new Example3(memberDao, util);
 
-        Member inputMember = new Member();
+        var inputMember = GenerateMember("IT012", "EMIAL@email.com", "0978123456", new DateTime());
+        var expectedMember = GenerateMember("IT012", "EMIAL@email.com", "0978123457", new DateTime());
         var exception = new Exception("Test Error");
 
         memberDao.QueryMember(Arg.Is(inputMember.Id)).Returns(Task.FromResult<Member?>(null));
+        memberDao.InsertMember(Arg.Is<Member>(p => expectedMember.ToExpectedObject().Matches(p))).Throws(exception);
 
         var actual = await example3.SetMember(inputMember);
         Assert.AreEqual($"Error 58825252 : {exception.Message}", actual);
+    }
+
+    private static Member GenerateMember(string id, string email, string phone, DateTime updateTime)
+    {
+        var inputMember = new Member
+        {
+            Id = id,
+            Email = email,
+            Phone = phone,
+            UpdateTime = updateTime
+        };
+        return inputMember;
     }
 }
