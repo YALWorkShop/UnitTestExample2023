@@ -10,6 +10,14 @@ public class Example1Test
         AdditionShouldBe(1, 2, 3);
     }
 
+
+    [Test]
+    public void AdditionTest_3_add_2_then_5()
+    {
+        AdditionShouldBe(3, 2, 5);
+    }
+
+
     private void AdditionShouldBe(int a, int b, int expected)
     {
         var actual = _example1.Addition(a, b);
