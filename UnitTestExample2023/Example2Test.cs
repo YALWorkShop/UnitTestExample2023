@@ -20,6 +20,7 @@ public class Example2Test
 
         TimeUpShouldBe(false, "Time is almost up.");
     }
+
     [Test]
     public void TimeUpTest_time_is_up_equal()
     {
@@ -28,7 +29,6 @@ public class Example2Test
 
         TimeUpShouldBe(true, "Time is up.");
     }
-
 
     [Test]
     public void TimeUpTest_time_is_up_later_than()
@@ -39,9 +39,6 @@ public class Example2Test
 
         TimeUpShouldBe(true, "Time is up.");
     }
-
-
-
 
     private void TimeUpShouldBe(bool expected, string expectedPrintString)
     {
