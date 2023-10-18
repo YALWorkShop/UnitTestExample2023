@@ -18,8 +18,15 @@ namespace UnitTestExample2023
         }
     }
 
-    public class FackExample2 : Example2
+    public class FakeExample2 : Example2
     {
+        private DateTime _settingTime;
+
+        public void SetSettingTime(DateTime settingTime)
+        {
+            _settingTime = settingTime;
+        }
+
         protected override void ConsoleWriteLine(string printStr)
         {
             base.ConsoleWriteLine(printStr);
@@ -32,7 +39,7 @@ namespace UnitTestExample2023
 
         protected override DateTime GetSettingTime()
         {
-            return base.GetSettingTime();
+            return _settingTime;
         }
     }
 }
