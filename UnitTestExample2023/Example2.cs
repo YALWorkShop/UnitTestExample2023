@@ -6,7 +6,7 @@ public class Example2
 {
     public bool TimeUp()
     {
-        if (GetSettingTime() >= DateTime.Now)
+        if (GetSettingTime() >= GetNow())
         {
             Console.WriteLine("Time is up.");
             return true;
@@ -14,6 +14,11 @@ public class Example2
         
         Console.WriteLine("Time is almost up.");
         return false;
+    }
+
+    protected virtual DateTime GetNow()
+    {
+        return DateTime.Now;
     }
 
     protected virtual DateTime GetSettingTime()
