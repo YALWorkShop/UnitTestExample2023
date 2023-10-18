@@ -76,7 +76,13 @@ public class MemberDao : IMemberDao
     }
 }
 
-public class Util
+public interface IUtil
+{
+    void SetExceptionLog(string exception, string functionName);
+    DateTime GetNow();
+}
+
+public class Util : IUtil
 {
     public void SetExceptionLog(string exception, string functionName)
     {
