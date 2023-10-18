@@ -17,18 +17,19 @@ public class Example3
     public async Task<string> SetMember(Member inputMember)
     {
         try
-        {            var member = await _memberDao.QueryMember(inputMember.Id);
+        {
+            var member = await _memberDao.QueryMember(inputMember.Id);
 
             if (member == null)
             {
-                inputMember.UpdateTime = DateTime.Now;
+                inputMember.UpdateTime = GetNow();
                 await _memberDao.InsertMember(inputMember);
             }
             else
             {
                 member.Email = inputMember.Email;
                 member.Phone = inputMember.Phone;
-                member.UpdateTime = DateTime.Now;
+                member.UpdateTime = GetNow();
                 await _memberDao.UpdateMember(member);
             }
 
@@ -41,6 +42,10 @@ public class Example3
         }
     }
 
+    public DateTime GetNow()
+    {
+        return DateTime.Now;
+    }
 }
 
 public class Member
