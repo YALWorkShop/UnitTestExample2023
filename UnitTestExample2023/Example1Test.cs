@@ -15,7 +15,7 @@ public class Example1Test
     [Test]
     public void AdditionTest_3_add_2_then_5()
     {
-        AdditionShouldBe(3, 2, 5);
+        AdditionShouldBe(3, 2, 6);
     }
 
 
