@@ -17,4 +17,22 @@ namespace UnitTestExample2023
             Assert.AreEqual(false, actual);
         }
     }
+
+    public class FackExample2 : Example2
+    {
+        protected override void ConsoleWriteLine(string printStr)
+        {
+            base.ConsoleWriteLine(printStr);
+        }
+
+        protected override DateTime GetNow()
+        {
+            return base.GetNow();
+        }
+
+        protected override DateTime GetSettingTime()
+        {
+            return base.GetSettingTime();
+        }
+    }
 }
