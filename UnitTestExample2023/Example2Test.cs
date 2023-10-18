@@ -23,13 +23,16 @@ public class Example2Test
 
 
     [Test]
-    public void TimeUpTest_time_is_up_equal()
+    public void TimeUpTest_time_is_up_later_than()
     {
-        GivenSettingTime(_now);
+        var laterSettingTime = new DateTime(2023, 12, 25, 01, 20, 0);
+        GivenSettingTime(laterSettingTime);
         GivenGetNow(_now);
 
         TimeUpShouldBe(true, "Time is up.");
     }
+
+
 
 
     private void TimeUpShouldBe(bool expected, string expectedPrintString)
