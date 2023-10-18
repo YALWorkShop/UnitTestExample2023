@@ -8,12 +8,17 @@ public class Example2
     {
         if (GetSettingTime() >= GetNow())
         {
-            Console.WriteLine("Time is up.");
+            ConsoleWriteLine("Time is up.");
             return true;
         }
-        
-        Console.WriteLine("Time is almost up.");
+
+        ConsoleWriteLine("Time is almost up.");
         return false;
+    }
+
+    private static void ConsoleWriteLine(string printStr)
+    {
+        Console.WriteLine(printStr);
     }
 
     protected virtual DateTime GetNow()
