@@ -8,11 +8,13 @@ namespace UnitTestExample2023
 {
     public class Example2Test
     {
+        private readonly DateTime _settingTime = new DateTime(2023, 12, 24, 23, 59, 59);
+
         [Test]
         public void TimeUpTest_time_is_almost_up()
         {
-            var example2 = new Example2();
-
+            var example2 = new FakeExample2();
+            example2.SetSettingTime(_settingTime);
             var actual = example2.TimeUp();
             Assert.AreEqual(false, actual);
         }
