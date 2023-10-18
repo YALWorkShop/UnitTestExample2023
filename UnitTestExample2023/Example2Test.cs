@@ -20,7 +20,7 @@ namespace UnitTestExample2023
 
             var actual = example2.TimeUp();
             Assert.AreEqual(false, actual);
-            Assert.AreEqual("Time is up.", example2.ActualPrintStr);
+            Assert.AreEqual("Time is almost up.", example2.ActualPrintStr);
         }
     }
 
