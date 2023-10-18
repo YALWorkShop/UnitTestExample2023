@@ -21,7 +21,7 @@ public class Tests
         var example3 = new Example3(memberDao, util);
 
         var inputMember = GenerateMember("IT012", "EMIAL@email.com", "0978123456", new DateTime());
-        var expectedMember = GenerateMember("IT012", "EMIAL@email.com", "0978123457", new DateTime());
+        var expectedMember = GenerateMember("IT012", "EMIAL@email.com", "0978123456", new DateTime());
         var exception = new Exception("Test Error");
 
         memberDao.QueryMember(Arg.Is(inputMember.Id)).Returns(Task.FromResult<Member?>(null));
@@ -29,6 +29,8 @@ public class Tests
 
         var actual = await example3.SetMember(inputMember);
         Assert.AreEqual($"Error 58825252 : {exception.Message}", actual);
+
+        util.Received(0).SetExceptionLog(Arg.Is(exception.Message), Arg.Is(nameof(Example3.SetMember)));
     }
 
     private static Member GenerateMember(string id, string email, string phone, DateTime updateTime)
