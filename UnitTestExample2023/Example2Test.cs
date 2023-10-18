@@ -15,12 +15,17 @@ public class Example2Test
     [Test]
     public void TimeUpTest_time_is_almost_up()
     {
-        _example2.SetSettingTime(_settingTime);
+        GivenSettingTime(_settingTime);
         _example2.SetNow(_now);
 
         var actual = _example2.TimeUp();
         Assert.AreEqual(false, actual);
         Assert.AreEqual("Time is almost up.", _example2.ActualPrintStr);
+    }
+
+    private void GivenSettingTime(DateTime settingTime)
+    {
+        _example2.SetSettingTime(settingTime);
     }
 }
 
