@@ -17,8 +17,10 @@ namespace UnitTestExample2023
             var example2 = new FakeExample2();
             example2.SetSettingTime(_settingTime);
             example2.SetNow(_now);
+
             var actual = example2.TimeUp();
             Assert.AreEqual(false, actual);
+            Assert.AreEqual("Time is up.", example2.ActualPrintStr);
         }
     }
 
@@ -26,6 +28,9 @@ namespace UnitTestExample2023
     {
         private DateTime _settingTime;
         private DateTime _now;
+        private string _actualPrintStr;
+
+        public string ActualPrintStr => _actualPrintStr;
 
         public void SetSettingTime(DateTime settingTime)
         {
@@ -39,7 +44,7 @@ namespace UnitTestExample2023
 
         protected override void ConsoleWriteLine(string printStr)
         {
-            base.ConsoleWriteLine(printStr);
+            _actualPrintStr = printStr;
         }
 
         protected override DateTime GetNow()
