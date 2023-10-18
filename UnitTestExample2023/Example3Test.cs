@@ -1,3 +1,6 @@
+using NSubstitute;
+using System;
+
 namespace UnitTestExample2023;
 
 public class Tests
@@ -9,8 +12,10 @@ public class Tests
     }
 
     [Test]
-    public void Test1()
+    public async Task SetMember_insert_member_exception_occur()
     {
-        Assert.Pass();
+        IUtil util = Substitute.For<IUtil>();
+        IMemberDao memberDao = Substitute.For<IMemberDao>();
+        var example3 = new Example3(memberDao, util);
     }
 }
