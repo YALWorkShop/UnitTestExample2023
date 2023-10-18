@@ -18,9 +18,14 @@ public class Example2Test
         GivenSettingTime(_settingTime);
         GivenGetNow(_now);
 
+        TimeUpShouldBe(false, "Time is almost up.");
+    }
+
+    private void TimeUpShouldBe(bool expected, string expectedPrintString)
+    {
         var actual = _example2.TimeUp();
-        Assert.AreEqual(false, actual);
-        Assert.AreEqual("Time is almost up.", _example2.ActualPrintStr);
+        Assert.AreEqual(expected, actual);
+        Assert.AreEqual(expectedPrintString, _example2.ActualPrintStr);
     }
 
     private void GivenGetNow(DateTime now)
