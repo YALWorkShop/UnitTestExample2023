@@ -21,6 +21,8 @@ public class Tests
         Member inputMember = new Member();
         var exception = new Exception("Test Error");
 
+        memberDao.QueryMember(Arg.Is(inputMember.Id)).Returns(Task.FromResult<Member?>(null));
+
         var actual = await example3.SetMember(inputMember);
         Assert.AreEqual($"Error 58825252 : {exception.Message}", actual);
     }
