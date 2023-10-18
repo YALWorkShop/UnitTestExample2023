@@ -17,5 +17,11 @@ public class Tests
         IUtil util = Substitute.For<IUtil>();
         IMemberDao memberDao = Substitute.For<IMemberDao>();
         var example3 = new Example3(memberDao, util);
+
+        Member inputMember = new Member();
+        var exception = new Exception("Test Error");
+
+        var actual = await example3.SetMember(inputMember);
+        Assert.AreEqual($"Error 58825252 : {exception.Message}", actual);
     }
 }
