@@ -5,13 +5,13 @@ namespace UnitTestExample2023;
 
 public class Example3
 {
-    private MemberDao _memberDao;
-    private Util _util;
+    private IMemberDao _memberDao;
+    private IUtil _util;
 
-    public Example3()
+    public Example3(IMemberDao memberDao, IUtil util)
     {
-        _memberDao = new MemberDao();
-        _util = new Util();
+        _memberDao = memberDao;
+        _util = util;
     }
 
     public async Task<string> SetMember(Member inputMember)
