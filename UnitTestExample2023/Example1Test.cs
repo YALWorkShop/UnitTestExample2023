@@ -2,11 +2,18 @@
 
 public class Example1Test
 {
+    private readonly Example1 _example1 = new Example1();
+
     [Test]
     public void AdditionTest_1_add_2_then_3()
     {
-        var example1 = new Example1();
-        var actual = example1.Addition(1, 2);
-        Assert.AreEqual(3,actual);
+        AdditionShouldBe(1, 2, 3);
     }
+
+    private void AdditionShouldBe(int a, int b, int expected)
+    {
+        var actual = _example1.Addition(a, b);
+        Assert.AreEqual(expected, actual);
+    }
+
 }
