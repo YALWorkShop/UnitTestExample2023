@@ -16,7 +16,7 @@ public class Example2
         return false;
     }
 
-    private static void ConsoleWriteLine(string printStr)
+    protected virtual void ConsoleWriteLine(string printStr)
     {
         Console.WriteLine(printStr);
     }
