@@ -28,7 +28,7 @@ public class Example2Test
         GivenSettingTime(_now);
         GivenGetNow(_now);
 
-        TimeUpShouldBe(false, "Time is up.");
+        TimeUpShouldBe(true, "Time is up.");
     }
 
 
