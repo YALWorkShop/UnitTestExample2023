@@ -7,7 +7,8 @@ public class Example1Test
     [Test]
     public void AdditionTest_1_add_2_then_3()
     {
-        AdditionShouldBe(1, 2, 3);
+        // new requirement : a + b => a * b
+        AdditionShouldBe(1, 2, 2);
     }
 
 
