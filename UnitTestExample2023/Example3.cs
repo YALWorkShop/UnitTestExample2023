@@ -22,14 +22,14 @@ public class Example3
 
             if (member == null)
             {
-                inputMember.UpdateTime = GetNow();
+                inputMember.UpdateTime = _util.GetNow();
                 await _memberDao.InsertMember(inputMember);
             }
             else
             {
                 member.Email = inputMember.Email;
                 member.Phone = inputMember.Phone;
-                member.UpdateTime = GetNow();
+                member.UpdateTime = _util.GetNow();
                 await _memberDao.UpdateMember(member);
             }
 
@@ -40,11 +40,6 @@ public class Example3
             _util.SetExceptionLog(exception.Message, nameof(SetMember));
             return $"Error 58825252 : {exception.Message}";
         }
-    }
-
-    public DateTime GetNow()
-    {
-        return DateTime.Now;
     }
 }
 
@@ -79,5 +74,10 @@ public class Util
     public void SetExceptionLog(string exception, string functionName)
     {
         throw new NotImplementedException();
+    }
+
+    public DateTime GetNow()
+    {
+        return DateTime.Now;
     }
 }
