@@ -5,32 +5,38 @@ namespace UnitTestExample2023;
 
 public class Example3
 {
+    private MemberDao _memberDao;
+    private Util _util;
+
+    public Example3()
+    {
+        _memberDao = new MemberDao();
+        _util = new Util();
+    }
+
     public async Task<string> SetMember(Member inputMember)
     {
         try
-        {
-            var memberDao = new MemberDao();
-
-            var member =await memberDao.QueryMember(inputMember.Id);
+        {            var member = await _memberDao.QueryMember(inputMember.Id);
 
             if (member == null)
             {
                 inputMember.UpdateTime = DateTime.Now;
-                await memberDao.InsertMember(inputMember);
+                await _memberDao.InsertMember(inputMember);
             }
             else
             {
                 member.Email = inputMember.Email;
                 member.Phone = inputMember.Phone;
                 member.UpdateTime = DateTime.Now;
-                await memberDao.UpdateMember(member);
+                await _memberDao.UpdateMember(member);
             }
 
             return "Success";
         }
         catch (Exception exception)
         {
-            new Util().SetExceptionLog(exception.Message,nameof(SetMember));
+            _util.SetExceptionLog(exception.Message, nameof(SetMember));
             return $"Error 58825252 : {exception.Message}";
         }
     }
