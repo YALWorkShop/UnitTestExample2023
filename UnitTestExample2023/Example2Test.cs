@@ -20,6 +20,14 @@ public class Example2Test
 
         TimeUpShouldBe(false, "Time is almost up.");
     }
+    [Test]
+    public void TimeUpTest_time_is_up_equal()
+    {
+        GivenSettingTime(_now);
+        GivenGetNow(_now);
+
+        TimeUpShouldBe(true, "Time is up.");
+    }
 
 
     [Test]
