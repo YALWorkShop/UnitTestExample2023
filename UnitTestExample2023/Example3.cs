@@ -51,7 +51,14 @@ public class Member
     public DateTime UpdateTime { get; set; }
 }
 
-public class MemberDao
+public interface IMemberDao
+{
+    Task<Member?> QueryMember(string id);
+    Task InsertMember(Member inputMember);
+    Task UpdateMember(Member member);
+}
+
+public class MemberDao : IMemberDao
 {
     public async Task<Member?> QueryMember(string id)
     {
