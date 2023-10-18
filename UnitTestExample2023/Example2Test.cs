@@ -21,6 +21,17 @@ public class Example2Test
         TimeUpShouldBe(false, "Time is almost up.");
     }
 
+
+    [Test]
+    public void TimeUpTest_time_is_up_equal()
+    {
+        GivenSettingTime(_now);
+        GivenGetNow(_now);
+
+        TimeUpShouldBe(false, "Time is up.");
+    }
+
+
     private void TimeUpShouldBe(bool expected, string expectedPrintString)
     {
         var actual = _example2.TimeUp();
