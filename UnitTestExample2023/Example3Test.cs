@@ -28,11 +28,16 @@ public class Tests
         var expectedMember = GenerateMember("IT012", "EMIAL@email.com", "0978123456", new DateTime());
         var exception = new Exception("Test Error");
 
-        _memberDao.QueryMember(Arg.Is(inputMember.Id)).Returns(Task.FromResult<Member?>(null));
+        GivenQueryMember(inputMember.Id, null);
         _memberDao.InsertMember(Arg.Is<Member>(p => expectedMember.ToExpectedObject().Matches(p))).Throws(exception);
 
         await SetMemberShouldBe(inputMember, $"Error 58825252 : {exception.Message}");
         SetExceptionLogShouldReceived(exception, 1);
+    }
+
+    private void GivenQueryMember(string memberId, Member? resultMember)
+    {
+        _memberDao.QueryMember(Arg.Is(memberId)).Returns(Task.FromResult<Member?>(resultMember));
     }
 
     private void SetExceptionLogShouldReceived(Exception exception, int times)
