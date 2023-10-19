@@ -50,6 +50,23 @@ public class Tests
         await InsertMemberShouldReceived(expectedMember, 1);
     }
 
+    [Test]
+    public async Task SetMember_update_member_success()
+    {
+        var inputMember = GenerateMember("IT012", "EMIAL@email.com", "0978123456", new DateTime());
+        var expectedMember = GenerateMember("IT012", "EMIAL@email.com", "0978123456", _dateTimeNow);
+        var resultMember = GenerateMember("IT012", "123", "789", new DateTime(2023, 1, 1));
+        var exception = new Exception("Test Error");
+
+        GivenDateTimeNow(_dateTimeNow);
+        GivenQueryMember(inputMember.Id, resultMember);
+
+        await SetMemberShouldBe(inputMember, "Success");
+        SetExceptionLogShouldReceived(exception, 0);
+        await InsertMemberShouldReceived(expectedMember, 1);
+    }
+
+
     private void GivenDateTimeNow(DateTime dateTimeNow)
     {
         _util.GetNow().Returns(dateTimeNow);
