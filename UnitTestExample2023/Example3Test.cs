@@ -1,4 +1,5 @@
 using ExpectedObjects;
+using FluentAssertions;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 
@@ -68,6 +69,19 @@ public class Tests
         await UpdateMemberShouldReceived(expectedMember, 1);
     }
 
+    [Test]
+    public async Task SetMember_memberId_is_null_exception_occur()
+    {
+        var inputMember = GenerateMember(null, "EMIAL@email.com", "0978123456", new DateTime());
+        var exception = new Exception("Test Error");
+
+
+        var actual = async () =>
+        {
+            await _example3.SetMember(inputMember);
+        };
+        await actual.Should().ThrowAsync<Exception>().WithMessage(exception.Message);
+    }
     private async Task UpdateMemberShouldReceived(Member expectedMember, int times)
     {
         await _memberDao.Received(times).UpdateMember(Arg.Is<Member>(p => expectedMember.ToExpectedObject().Matches(p)));
