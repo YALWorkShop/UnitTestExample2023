@@ -7,21 +7,11 @@ namespace UnitTestExample2023;
 
 public class Tests
 {
+    // Add nuget Package FluentAssertions , NSubstitute , ExpectedObject
+    private readonly DateTime _dateTimeNow = new DateTime(2023, 12, 12);
     private Example3 _example3;
     private IMemberDao _memberDao;
     private IUtil _util;
-    private readonly DateTime _dateTimeNow = new DateTime(2023, 12, 12);
-
-    [SetUp]
-    public void SetUp()
-    {
-        _memberDao = Substitute.For<IMemberDao>();
-        _util = Substitute.For<IUtil>();
-        _example3 = new Example3(_memberDao, _util);
-    }
-
-    // Add nuget Package FluentAssertions , NSubstitute , ExpectedObject
-
     [Test]
     public async Task SetMember_insert_member_exception_occur()
     {
@@ -53,6 +43,14 @@ public class Tests
     }
 
     [Test]
+    public async Task SetMember_memberId_is_null_exception_occur()
+    {
+        var inputMember = GenerateMember(null, "EMIAL@email.com", "0978123456", new DateTime());
+
+        await SetMemberShouldThrow(inputMember, "MemberId is null");
+    }
+
+    [Test]
     public async Task SetMember_update_member_success()
     {
         var inputMember = GenerateMember("IT012", "EMIAL@email.com", "0978123456", new DateTime());
@@ -69,31 +67,28 @@ public class Tests
         await UpdateMemberShouldReceived(expectedMember, 1);
     }
 
-    [Test]
-    public async Task SetMember_memberId_is_null_exception_occur()
+    [SetUp]
+    public void SetUp()
     {
-        var inputMember = GenerateMember(null, "EMIAL@email.com", "0978123456", new DateTime());
-
-        var actual = async () =>
+        _memberDao = Substitute.For<IMemberDao>();
+        _util = Substitute.For<IUtil>();
+        _example3 = new Example3(_memberDao, _util);
+    }
+    private static Member GenerateMember(string id, string email, string phone, DateTime updateTime)
+    {
+        var inputMember = new Member
         {
-            await _example3.SetMember(inputMember);
+            Id = id,
+            Email = email,
+            Phone = phone,
+            UpdateTime = updateTime
         };
-        await actual.Should().ThrowAsync<Exception>().WithMessage("MemberId is null");
+        return inputMember;
     }
-    private async Task UpdateMemberShouldReceived(Member expectedMember, int times)
-    {
-        await _memberDao.Received(times).UpdateMember(Arg.Is<Member>(p => expectedMember.ToExpectedObject().Matches(p)));
-    }
-
 
     private void GivenDateTimeNow(DateTime dateTimeNow)
     {
         _util.GetNow().Returns(dateTimeNow);
-    }
-
-    private async Task InsertMemberShouldReceived(Member expectedMember, int times)
-    {
-        await _memberDao.Received(times).InsertMember(Arg.Is<Member>(p => expectedMember.ToExpectedObject().Matches(p)));
     }
 
     private void GivenInsertMemberThrow(Member expectedMember, Exception exception)
@@ -104,6 +99,11 @@ public class Tests
     private void GivenQueryMember(string memberId, Member? resultMember)
     {
         _memberDao.QueryMember(Arg.Is(memberId)).Returns(Task.FromResult(resultMember));
+    }
+
+    private async Task InsertMemberShouldReceived(Member expectedMember, int times)
+    {
+        await _memberDao.Received(times).InsertMember(Arg.Is<Member>(p => expectedMember.ToExpectedObject().Matches(p)));
     }
 
     private void SetExceptionLogShouldReceived(Exception exception, int times)
@@ -117,15 +117,15 @@ public class Tests
         Assert.AreEqual(expectedResult, actual);
     }
 
-    private static Member GenerateMember(string id, string email, string phone, DateTime updateTime)
+    private async Task SetMemberShouldThrow(Member inputMember, string exceptionMessage)
     {
-        var inputMember = new Member
-        {
-            Id = id,
-            Email = email,
-            Phone = phone,
-            UpdateTime = updateTime
-        };
-        return inputMember;
+        var actual = async () => { await _example3.SetMember(inputMember); };
+        await actual.Should().ThrowAsync<Exception>().WithMessage(exceptionMessage);
+    }
+
+
+    private async Task UpdateMemberShouldReceived(Member expectedMember, int times)
+    {
+        await _memberDao.Received(times).UpdateMember(Arg.Is<Member>(p => expectedMember.ToExpectedObject().Matches(p)));
     }
 }
