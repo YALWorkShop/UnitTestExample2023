@@ -30,7 +30,7 @@ public class Tests
         var actual = await example3.SetMember(inputMember);
         Assert.AreEqual($"Error 58825252 : {exception.Message}", actual);
 
-        util.Received(0).SetExceptionLog(Arg.Is(exception.Message), Arg.Is(nameof(Example3.SetMember)));
+        util.Received(1).SetExceptionLog(Arg.Is(exception.Message), Arg.Is(nameof(Example3.SetMember)));
     }
 
     private static Member GenerateMember(string id, string email, string phone, DateTime updateTime)
