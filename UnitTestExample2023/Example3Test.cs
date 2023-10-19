@@ -63,7 +63,7 @@ public class Tests
 
         await SetMemberShouldBe(inputMember, "Success");
         SetExceptionLogShouldReceived(exception, 0);
-        await InsertMemberShouldReceived(expectedMember, 1);
+        await InsertMemberShouldReceived(expectedMember, 0);
     }
 
 
