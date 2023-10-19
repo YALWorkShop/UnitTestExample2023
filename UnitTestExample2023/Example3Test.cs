@@ -23,16 +23,34 @@ public class Tests
     [Test]
     public async Task SetMember_insert_member_exception_occur()
     {
-
         var inputMember = GenerateMember("IT012", "EMIAL@email.com", "0978123456", new DateTime());
         var expectedMember = GenerateMember("IT012", "EMIAL@email.com", "0978123456", new DateTime());
         var exception = new Exception("Test Error");
 
         GivenQueryMember(inputMember.Id, null);
-        _memberDao.InsertMember(Arg.Is<Member>(p => expectedMember.ToExpectedObject().Matches(p))).Throws(exception);
+        GivenInsertMemberThrow(expectedMember, exception);
 
         await SetMemberShouldBe(inputMember, $"Error 58825252 : {exception.Message}");
         SetExceptionLogShouldReceived(exception, 1);
+    }
+
+    [Test]
+    public async Task SetMember_insert_member_success()
+    {
+        var inputMember = GenerateMember("IT012", "EMIAL@email.com", "0978123456", new DateTime());
+        var expectedMember = GenerateMember("IT012", "EMIAL@email.com", "0978123456", new DateTime());
+        var exception = new Exception("Test Error");
+
+        GivenQueryMember(inputMember.Id, null);
+
+        await SetMemberShouldBe(inputMember, $"Success");
+        SetExceptionLogShouldReceived(exception, 0);
+        await _memberDao.Received(0).InsertMember(Arg.Is<Member>(p => expectedMember.ToExpectedObject().Matches(p)));
+    }
+
+    private void GivenInsertMemberThrow(Member expectedMember, Exception exception)
+    {
+        _memberDao.InsertMember(Arg.Is<Member>(p => expectedMember.ToExpectedObject().Matches(p))).Throws(exception);
     }
 
     private void GivenQueryMember(string memberId, Member? resultMember)
