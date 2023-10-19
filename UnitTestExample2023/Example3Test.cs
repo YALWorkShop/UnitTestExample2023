@@ -9,6 +9,7 @@ public class Tests
     private Example3 _example3;
     private IMemberDao _memberDao;
     private IUtil _util;
+    private readonly DateTime _dateTimeNow = new DateTime(2023, 12, 12);
 
     [SetUp]
     public void SetUp()
@@ -38,14 +39,25 @@ public class Tests
     public async Task SetMember_insert_member_success()
     {
         var inputMember = GenerateMember("IT012", "EMIAL@email.com", "0978123456", new DateTime());
-        var expectedMember = GenerateMember("IT012", "EMIAL@email.com", "0978123456", new DateTime());
+        var expectedMember = GenerateMember("IT012", "EMIAL@email.com", "0978123456", _dateTimeNow);
         var exception = new Exception("Test Error");
 
+        GivenDateTimeNow(_dateTimeNow);
         GivenQueryMember(inputMember.Id, null);
 
-        await SetMemberShouldBe(inputMember, $"Success");
+        await SetMemberShouldBe(inputMember, "Success");
         SetExceptionLogShouldReceived(exception, 0);
-        await _memberDao.Received(0).InsertMember(Arg.Is<Member>(p => expectedMember.ToExpectedObject().Matches(p)));
+        await InsertMemberShouldReceived(expectedMember, 1);
+    }
+
+    private void GivenDateTimeNow(DateTime dateTimeNow)
+    {
+        _util.GetNow().Returns(dateTimeNow);
+    }
+
+    private async Task InsertMemberShouldReceived(Member expectedMember, int times)
+    {
+        await _memberDao.Received(times).InsertMember(Arg.Is<Member>(p => expectedMember.ToExpectedObject().Matches(p)));
     }
 
     private void GivenInsertMemberThrow(Member expectedMember, Exception exception)
@@ -55,7 +67,7 @@ public class Tests
 
     private void GivenQueryMember(string memberId, Member? resultMember)
     {
-        _memberDao.QueryMember(Arg.Is(memberId)).Returns(Task.FromResult<Member?>(resultMember));
+        _memberDao.QueryMember(Arg.Is(memberId)).Returns(Task.FromResult(resultMember));
     }
 
     private void SetExceptionLogShouldReceived(Exception exception, int times)
