@@ -64,7 +64,12 @@ public class Tests
         await SetMemberShouldBe(inputMember, "Success");
         SetExceptionLogShouldReceived(exception, 0);
         await InsertMemberShouldReceived(expectedMember, 0);
-        await _memberDao.Received(0).UpdateMember(Arg.Is<Member>(p => expectedMember.ToExpectedObject().Matches(p)));
+        await UpdateMemberShouldReceived(expectedMember, 1);
+    }
+
+    private async Task UpdateMemberShouldReceived(Member expectedMember, int times)
+    {
+        await _memberDao.Received(times).UpdateMember(Arg.Is<Member>(p => expectedMember.ToExpectedObject().Matches(p)));
     }
 
 
