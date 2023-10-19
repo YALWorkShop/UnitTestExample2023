@@ -23,6 +23,7 @@ public class Tests
     [Test]
     public async Task SetMember_insert_member_exception_occur()
     {
+
         var inputMember = GenerateMember("IT012", "EMIAL@email.com", "0978123456", new DateTime());
         var expectedMember = GenerateMember("IT012", "EMIAL@email.com", "0978123456", new DateTime());
         var exception = new Exception("Test Error");
@@ -30,9 +31,19 @@ public class Tests
         _memberDao.QueryMember(Arg.Is(inputMember.Id)).Returns(Task.FromResult<Member?>(null));
         _memberDao.InsertMember(Arg.Is<Member>(p => expectedMember.ToExpectedObject().Matches(p))).Throws(exception);
 
+        await SetMemberShouldBe(inputMember, $"Error 58825252 : {exception.Message}");
+        SetExceptionLogShouldReceived(exception, 1);
+    }
+
+    private void SetExceptionLogShouldReceived(Exception exception, int times)
+    {
+        _util.Received(times).SetExceptionLog(Arg.Is(exception.Message), Arg.Is(nameof(Example3.SetMember)));
+    }
+
+    private async Task SetMemberShouldBe(Member inputMember, object? expectedResult)
+    {
         var actual = await _example3.SetMember(inputMember);
-        Assert.AreEqual($"Error 58825252 : {exception.Message}", actual);
-        _util.Received(1).SetExceptionLog(Arg.Is(exception.Message), Arg.Is(nameof(Example3.SetMember)));
+        Assert.AreEqual(expectedResult, actual);
     }
 
     private static Member GenerateMember(string id, string email, string phone, DateTime updateTime)
