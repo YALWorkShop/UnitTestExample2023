@@ -16,6 +16,11 @@ public class Example3
 
     public async Task<string> SetMember(Member inputMember)
     {
+        if (inputMember.Id == null)
+        {
+            throw new Exception("MemberId is null");
+        }
+
         try
         {
             var member = await _memberDao.QueryMember(inputMember.Id);

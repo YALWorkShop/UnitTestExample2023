@@ -73,14 +73,12 @@ public class Tests
     public async Task SetMember_memberId_is_null_exception_occur()
     {
         var inputMember = GenerateMember(null, "EMIAL@email.com", "0978123456", new DateTime());
-        var exception = new Exception("Test Error");
-
 
         var actual = async () =>
         {
             await _example3.SetMember(inputMember);
         };
-        await actual.Should().ThrowAsync<Exception>().WithMessage(exception.Message);
+        await actual.Should().ThrowAsync<Exception>().WithMessage("MemberId is null");
     }
     private async Task UpdateMemberShouldReceived(Member expectedMember, int times)
     {
