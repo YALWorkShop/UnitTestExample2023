@@ -7,7 +7,15 @@ using System.Threading.Tasks;
 
 namespace Homework
 {
-    public class PostRepository
+    public interface IPostRepository
+    {
+        Task<Post> Add(Post post);
+        Task<List<Post>> GetAll();
+        Task<Post> GetById(string id);
+        Task<Post> Update(Post post);
+    }
+
+    public class PostRepository : IPostRepository
     {
         public Task<Post> GetById(string id)
         {
