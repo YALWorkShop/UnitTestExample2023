@@ -66,6 +66,15 @@ namespace Homework
             await CreatePostShouldBe(createModel, false, "請輸入文章標題與內容", null);
         }
 
+        [TestCase("")]
+        [TestCase(null)]
+        public async Task CreatePost_ContentEmptyOrNull_Return_False_請輸入文章標題與內容(string content)
+        {
+            var createModel = new PostCreateModel() { Title = "myTitle", Content = content };
+
+            await CreatePostShouldBe(createModel, false, "請輸入文章標題與內容", null);
+        }
+
         private void CreateBlogShouldBe(BlogCreateModel createModel, bool isSuccess, string errorMessage, Blog expectedBlog)
         {
             var actualResult = _service.CreateBlog(createModel);
