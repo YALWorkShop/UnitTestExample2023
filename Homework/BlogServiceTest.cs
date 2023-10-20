@@ -1,4 +1,5 @@
-﻿using Homework.Models;
+﻿using ExpectedObjects;
+using Homework.Models;
 using NUnit.Framework;
 
 namespace Homework
@@ -28,6 +29,31 @@ namespace Homework
 
             Assert.That(act.IsSuccess, Is.True);
             Assert.That(act.Result.Id, Is.EqualTo("blog1"));
+        }
+
+        [Test]
+        public void CreateBlog_create_blog_Success_with_expected_blog()
+        {
+            var createModel = new BlogCreateModel()
+            {
+                Name = "It's me",
+                Introduction = "write something here..."
+            };
+
+            GivenBlogId("blog1");
+
+            var act = _service.CreateBlog(createModel);
+
+            var expectedBlog = new Blog
+            {
+                Id = "blog1",
+                Name = "It's me",
+                Introduction = "write something here..."
+            };
+
+            Assert.That(act.IsSuccess, Is.True);
+            Assert.That(act.ErrorMessage, Is.Null);
+            Assert.IsTrue(expectedBlog.ToExpectedObject().Equals(act.Result));
         }
 
         private void GivenBlogId(string blogId)
