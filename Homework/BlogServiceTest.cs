@@ -41,10 +41,10 @@ namespace Homework
         [Test]
         public async Task GetAllPosts_No_Post_Return_Empty_ListOfBlog()
         {
-            _postRepository.GetAll().Returns(Task.FromResult<List<Post>>(null));
+            GivenPostRepositoryGetAll(null);
 
             await GetAllPostsShouldBe(true, null, new List<Post>());
-            await _postRepository.Received(1).GetAll();
+            await PostRepositoryGetAllShouldReceived(1);
         }
 
         private async Task GetAllPostsShouldBe(bool isSuccess, string errorMessage, List<Post> expectedPosts)
@@ -78,6 +78,16 @@ namespace Homework
         private void GivenBlogId(string blogId)
         {
             _service.SetBlogId(blogId);
+        }
+
+        private void GivenPostRepositoryGetAll(List<Post> posts)
+        {
+            _postRepository.GetAll().Returns(Task.FromResult(posts));
+        }
+
+        private async Task PostRepositoryGetAllShouldReceived(int times)
+        {
+            await _postRepository.Received(times).GetAll();
         }
     }
 
