@@ -11,11 +11,16 @@ namespace Homework
                 IsSuccess = true,
                 Result = new Blog
                 {
-                    Id = Guid.NewGuid().ToString("N"),
+                    Id = GetBlogId(),
                     Name = blogCreateModel.Name,
                     Introduction = blogCreateModel.Introduction
                 }
             };
+        }
+
+        protected virtual string GetBlogId()
+        {
+            return Guid.NewGuid().ToString("N");
         }
 
         public async Task<ServiceResult<List<Post>>> GetAllPosts()
