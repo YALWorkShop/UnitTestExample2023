@@ -38,6 +38,28 @@ namespace Homework
             CreateBlogShouldBe(createModel, true, null, expectedBlog);
         }
 
+        [Test]
+        public async Task GetAllPosts_No_Post_Return_Empty_ListOfBlog()
+        {
+            _postRepository.GetAll().Returns(Task.FromResult<List<Post>>(null));
+
+            await GetAllPostsShouldBe(true, null, new List<Post>());
+        }
+
+        private async Task GetAllPostsShouldBe(bool isSuccess, string errorMessage, List<Post> expectedPosts)
+        {
+            var actualResult = await _service.GetAllPosts();
+
+            var expectedResult = new ServiceResult<List<Post>>
+            {
+                IsSuccess = isSuccess,
+                ErrorMessage = errorMessage,
+                Result = expectedPosts
+            };
+
+            Assert.IsTrue(expectedResult.ToExpectedObject().Equals(actualResult));
+        }
+
         private void CreateBlogShouldBe(BlogCreateModel createModel, bool isSuccess, string errorMessage, Blog expectedBlog)
         {
             var actualResult = _service.CreateBlog(createModel);
