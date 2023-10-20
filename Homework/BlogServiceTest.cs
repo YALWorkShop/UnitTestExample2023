@@ -15,23 +15,6 @@ namespace Homework
         }
 
         [Test]
-        public void CreateBlog_create_blog_Success_with_Id()
-        {
-            var createModel = new BlogCreateModel()
-            {
-                Name = "It's me",
-                Introduction = "write something here..."
-            };
-
-            GivenBlogId("blog1");
-
-            var act = _service.CreateBlog(createModel);
-
-            Assert.That(act.IsSuccess, Is.True);
-            Assert.That(act.Result.Id, Is.EqualTo("blog1"));
-        }
-
-        [Test]
         public void CreateBlog_create_blog_Success_with_expected_blog()
         {
             var createModel = new BlogCreateModel()
@@ -40,10 +23,6 @@ namespace Homework
                 Introduction = "write something here..."
             };
 
-            GivenBlogId("blog1");
-
-            var act = _service.CreateBlog(createModel);
-
             var expectedBlog = new Blog
             {
                 Id = "blog1",
@@ -51,9 +30,23 @@ namespace Homework
                 Introduction = "write something here..."
             };
 
-            Assert.That(act.IsSuccess, Is.True);
-            Assert.That(act.ErrorMessage, Is.Null);
-            Assert.IsTrue(expectedBlog.ToExpectedObject().Equals(act.Result));
+            GivenBlogId("blog1");
+
+            CreateBlogShouldBe(createModel, true, null, expectedBlog);
+        }
+
+        private void CreateBlogShouldBe(BlogCreateModel createModel, bool isSuccess, string errorMessage, Blog expectedBlog)
+        {
+            var actualResult = _service.CreateBlog(createModel);
+
+            var expectedResult = new ServiceResult<Blog>
+            {
+                IsSuccess = isSuccess,
+                ErrorMessage = errorMessage,
+                Result = expectedBlog
+            };
+
+            Assert.IsTrue(expectedResult.ToExpectedObject().Equals(actualResult));
         }
 
         private void GivenBlogId(string blogId)
