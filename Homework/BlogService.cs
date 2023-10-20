@@ -63,7 +63,7 @@ namespace Homework
 
             var newPost = new Post()
             {
-                Id = Guid.NewGuid().ToString("N"),
+                Id = GetPostId(),
                 Title = postCreateModel.Title,
                 Content = postCreateModel.Content,
                 CreatTime = DateTime.Now,
@@ -86,6 +86,11 @@ namespace Homework
                 IsSuccess = true,
                 Result = createResult
             };
+        }
+
+        protected virtual string GetPostId()
+        {
+            return Guid.NewGuid().ToString("N");
         }
 
         public async Task<ServiceResult<Post>> UpdatePost(string id, PostUpdateModel postUpdateModel)
