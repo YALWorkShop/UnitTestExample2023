@@ -44,6 +44,7 @@ namespace Homework
             _postRepository.GetAll().Returns(Task.FromResult<List<Post>>(null));
 
             await GetAllPostsShouldBe(true, null, new List<Post>());
+            await _postRepository.Received(1).GetAll();
         }
 
         private async Task GetAllPostsShouldBe(bool isSuccess, string errorMessage, List<Post> expectedPosts)
