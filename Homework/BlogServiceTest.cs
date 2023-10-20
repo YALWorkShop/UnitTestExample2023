@@ -57,6 +57,27 @@ namespace Homework
             await PostRepositoryGetAllShouldReceived(1);
         }
 
+        [Test]
+        public async Task CreatePost_TitleEmpty_Return_False_請輸入文章標題與內容()
+        {
+            var createModel = new PostCreateModel() { Title = "" };
+
+            await CreatePostShouldBe(createModel, false, "請輸入文章標題與內容", null);
+        }
+
+        private void CreateBlogShouldBe(BlogCreateModel createModel, bool isSuccess, string errorMessage, Blog expectedBlog)
+        {
+            var actualResult = _service.CreateBlog(createModel);
+
+            var expectedResult = new ServiceResult<Blog>
+            {
+                IsSuccess = isSuccess,
+                ErrorMessage = errorMessage,
+                Result = expectedBlog
+            };
+
+            Assert.IsTrue(expectedResult.ToExpectedObject().Equals(actualResult));
+        }
 
         private async Task GetAllPostsShouldBe(bool isSuccess, string errorMessage, List<Post> expectedPosts)
         {
@@ -72,15 +93,15 @@ namespace Homework
             Assert.IsTrue(expectedResult.ToExpectedObject().Equals(actualResult));
         }
 
-        private void CreateBlogShouldBe(BlogCreateModel createModel, bool isSuccess, string errorMessage, Blog expectedBlog)
+        private async Task CreatePostShouldBe(PostCreateModel createModel ,bool isSuccess, string errorMessage, Post expectedPost)
         {
-            var actualResult = _service.CreateBlog(createModel);
+            var actualResult = await _service.CreatePost(createModel);
 
-            var expectedResult = new ServiceResult<Blog>
+            var expectedResult = new ServiceResult<Post>
             {
                 IsSuccess = isSuccess,
                 ErrorMessage = errorMessage,
-                Result = expectedBlog
+                Result = expectedPost
             };
 
             Assert.IsTrue(expectedResult.ToExpectedObject().Equals(actualResult));
