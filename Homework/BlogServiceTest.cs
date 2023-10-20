@@ -47,6 +47,17 @@ namespace Homework
             await PostRepositoryGetAllShouldReceived(1);
         }
 
+        [Test]
+        public async Task GetAllPosts_Return_2_Posts()
+        {
+            var allPosts = new List<Post> { new Post { Id = "post1" }, new Post { Id = "post2" } };
+            GivenPostRepositoryGetAll(allPosts);
+
+            await GetAllPostsShouldBe(true, null, allPosts);
+            await PostRepositoryGetAllShouldReceived(1);
+        }
+
+
         private async Task GetAllPostsShouldBe(bool isSuccess, string errorMessage, List<Post> expectedPosts)
         {
             var actualResult = await _service.GetAllPosts();
