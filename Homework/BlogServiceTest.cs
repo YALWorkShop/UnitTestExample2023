@@ -75,6 +75,14 @@ namespace Homework
             await CreatePostShouldBe(createModel, false, "請輸入文章標題與內容", null);
         }
 
+        [Test]
+        public async Task CreatePost_ContentLessThan10words_Return_False_內容須超過10個字()
+        {
+            var createModel = new PostCreateModel() { Title = "myTitle", Content = "10 words" };
+
+            await CreatePostShouldBe(createModel, false, "內容須超過 10 個字", null);
+        }
+
         private void CreateBlogShouldBe(BlogCreateModel createModel, bool isSuccess, string errorMessage, Blog expectedBlog)
         {
             var actualResult = _service.CreateBlog(createModel);
