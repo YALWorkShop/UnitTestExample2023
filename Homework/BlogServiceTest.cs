@@ -1,17 +1,20 @@
 ﻿using ExpectedObjects;
 using Homework.Models;
 using NUnit.Framework;
+using NSubstitute;
 
 namespace Homework
 {
     public class BlogServiceTest
     {
         FakeBlogService _service;
+        IPostRepository _postRepository;
 
         [SetUp]
         public void SetUp()
         {
-            _service = new FakeBlogService();
+            _postRepository = Substitute.For<IPostRepository>();
+            _service = new FakeBlogService(_postRepository);
         }
 
         [Test]
@@ -58,6 +61,10 @@ namespace Homework
     public class FakeBlogService : BlogService
     {
         private string _blogId;
+
+        public FakeBlogService(IPostRepository postRepository) : base(postRepository)
+        {
+        }
 
         public void SetBlogId(string blogId)
         {
