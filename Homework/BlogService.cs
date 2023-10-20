@@ -4,6 +4,13 @@ namespace Homework
 {
     public class BlogService
     {
+        IPostRepository _postRepository;
+
+        public BlogService(IPostRepository postRepository)
+        {
+            _postRepository = postRepository;
+        }
+
         public ServiceResult<Blog> CreateBlog(BlogCreateModel blogCreateModel)
         {
             return new ServiceResult<Blog>
@@ -25,9 +32,7 @@ namespace Homework
 
         public async Task<ServiceResult<List<Post>>> GetAllPosts()
         {
-            var repository = new PostRepository();
-
-            var allPosts = await repository.GetAll() ?? new List<Post>();
+            var allPosts = await _postRepository.GetAll() ?? new List<Post>();
 
             return new ServiceResult<List<Post>>
             {
@@ -65,8 +70,7 @@ namespace Homework
                 UpdateTime = DateTime.Now
             };
 
-            var repository = new PostRepository();
-            var createResult = await repository.Add(newPost);
+            var createResult = await _postRepository.Add(newPost);
 
             if (createResult == null)
             {
@@ -104,8 +108,7 @@ namespace Homework
                 };
             }
 
-            var repository = new PostRepository();
-            var post = await repository.GetById(id);
+            var post = await _postRepository.GetById(id);
             if (post == null)
             {
                 throw new Exception("查無資料");
@@ -115,7 +118,7 @@ namespace Homework
             post.Content = postUpdateModel.Content;
             post.UpdateTime = DateTime.Now;
 
-            var updateResult = await repository.Update(post);
+            var updateResult = await _postRepository.Update(post);
 
             return new ServiceResult<Post>
             {
