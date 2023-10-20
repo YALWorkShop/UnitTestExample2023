@@ -57,10 +57,11 @@ namespace Homework
             await PostRepositoryGetAllShouldReceived(1);
         }
 
-        [Test]
-        public async Task CreatePost_TitleEmpty_Return_False_請輸入文章標題與內容()
+        [TestCase("")]
+        [TestCase(null)]
+        public async Task CreatePost_TitleEmptyOrNull_Return_False_請輸入文章標題與內容(string title)
         {
-            var createModel = new PostCreateModel() { Title = "" };
+            var createModel = new PostCreateModel() { Title = title };
 
             await CreatePostShouldBe(createModel, false, "請輸入文章標題與內容", null);
         }
