@@ -128,7 +128,7 @@ namespace Homework
 
                 post.Title = postUpdateModel.Title;
                 post.Content = postUpdateModel.Content;
-                post.UpdateTime = DateTime.Now;
+                post.UpdateTime = GetNow();
 
                 var updateResult = await _postRepository.Update(post);
 

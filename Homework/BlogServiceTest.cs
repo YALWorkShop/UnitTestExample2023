@@ -2,6 +2,7 @@
 using Homework.Models;
 using NUnit.Framework;
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 
 namespace Homework
 {
@@ -89,14 +90,7 @@ namespace Homework
         {
             var createModel = new PostCreateModel() { Title = "myTitle", Content = "exceed 10 words" };
 
-            var expectedAddedPost = new Post()
-            {
-                Id = "post1",
-                Title = "myTitle",
-                Content = "exceed 10 words",
-                CreatTime = fakeNow,
-                UpdateTime = fakeNow
-            };
+            var expectedAddedPost = GeneratePost("post1", "myTitle", "exceed 10 words", fakeNow, fakeNow);
 
             GivenPostId("post1");
             GivenNow(fakeNow);
@@ -111,14 +105,7 @@ namespace Homework
         {
             var createModel = new PostCreateModel() { Title = "myTitle", Content = "exceed 10 words" };
 
-            var expectedAddedPost = new Post()
-            {
-                Id = "post1",
-                Title = "myTitle",
-                Content = "exceed 10 words",
-                CreatTime = fakeNow,
-                UpdateTime = fakeNow
-            };
+            var expectedAddedPost = GeneratePost("post1", "myTitle", "exceed 10 words", fakeNow, fakeNow);
 
             GivenPostId("post1");
             GivenNow(fakeNow);
@@ -172,6 +159,25 @@ namespace Homework
             await PostRepositoryGetByIdShouldReceived(postId, 1);
         }
 
+        [Test]
+        public async Task UpdatePost_PostRepositoryUpdate_fail_Return_False_exception_message()
+        {
+            var postId = "post1";
+            var updateModel = new PostUpdateModel() { Title = "myTitle", Content = "exceed 10 words" };
+            var updateException = new Exception("update fail");
+
+            var originalPost = GeneratePost("post1", "old title", "old content is here", new DateTime(2023, 9, 30), new DateTime(2023, 9, 30));
+            var updatedPost = GeneratePost("post1", "myTitle", "exceed 10 words", new DateTime(2023, 9, 30), fakeNow);
+
+            GivenPostRepositoryGetById(postId, originalPost);
+            GivenNow(fakeNow);
+            _postRepository.Update(Arg.Is<Post>(p => updatedPost.ToExpectedObject().Equals(p))).Throws(updateException);
+
+            await UpdatePostShouldBe(postId, updateModel, false, "update fail", null);
+            await PostRepositoryGetByIdShouldReceived(postId, 1);
+            await _postRepository.Received(1).Update(Arg.Is<Post>(p => updatedPost.ToExpectedObject().Equals(p)));
+        }
+
         private void CreateBlogShouldBe(BlogCreateModel createModel, bool isSuccess, string errorMessage, Blog expectedBlog)
         {
             var actualResult = _service.CreateBlog(createModel);
@@ -183,7 +189,7 @@ namespace Homework
                 Result = expectedBlog
             };
 
-            Assert.IsTrue(expectedResult.ToExpectedObject().Equals(actualResult));
+            expectedResult.ToExpectedObject().ShouldEqual(actualResult);
         }
 
         private async Task GetAllPostsShouldBe(bool isSuccess, string errorMessage, List<Post> expectedPosts)
@@ -197,7 +203,7 @@ namespace Homework
                 Result = expectedPosts
             };
 
-            Assert.IsTrue(expectedResult.ToExpectedObject().Equals(actualResult));
+            expectedResult.ToExpectedObject().ShouldEqual(actualResult);
         }
 
         private async Task CreatePostShouldBe(PostCreateModel createModel, bool isSuccess, string errorMessage, Post expectedPost)
@@ -211,7 +217,7 @@ namespace Homework
                 Result = expectedPost
             };
 
-            Assert.IsTrue(expectedResult.ToExpectedObject().Equals(actualResult));
+            expectedResult.ToExpectedObject().ShouldEqual(actualResult);
         }
 
         private async Task UpdatePostShouldBe(string id, PostUpdateModel updateModel, bool isSuccess, string errorMessage, Post expectedPost)
@@ -225,7 +231,7 @@ namespace Homework
                 Result = expectedPost
             };
 
-            Assert.IsTrue(expectedResult.ToExpectedObject().Equals(actualResult));
+            expectedResult.ToExpectedObject().ShouldEqual(actualResult);
         }
 
         private void GivenBlogId(string blogId)
@@ -258,6 +264,18 @@ namespace Homework
             _postRepository.GetById(id).Returns(Task.FromResult(post));
         }
 
+        private Post GeneratePost(string id, string title, string content, DateTime createTime, DateTime updateTime)
+        {
+            return new Post
+            {
+                Id = id,
+                Title = title,
+                Content = content,
+                CreatTime = createTime,
+                UpdateTime = updateTime
+            };
+        }
+
         private async Task PostRepositoryGetAllShouldReceived(int times)
         {
             await _postRepository.Received(times).GetAll();
@@ -277,6 +295,12 @@ namespace Homework
         {
             await _postRepository.Received(times).GetById(id);
         }
+
+        private async Task PostRepositoryUpdateShouldReceived(Post post, int times)
+        {
+            await _postRepository.Received(times).Update(Arg.Is<Post>(p => post.ToExpectedObject().Equals(p)));
+        }
+
     }
 
     public class FakeBlogService : BlogService
