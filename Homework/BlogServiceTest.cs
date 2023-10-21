@@ -106,6 +106,28 @@ namespace Homework
             await PostRepositoryAddShouldReceived(expectedAddedPost, 1);
         }
 
+        [Test]
+        public async Task CreatePost_Success_Return_True_with_Post()
+        {
+            var createModel = new PostCreateModel() { Title = "myTitle", Content = "exceed 10 words" };
+
+            var expectedAddedPost = new Post()
+            {
+                Id = "post1",
+                Title = "myTitle",
+                Content = "exceed 10 words",
+                CreatTime = fakeNow,
+                UpdateTime = fakeNow
+            };
+
+            GivenPostId("post1");
+            GivenNow(fakeNow);
+            GivenPostRepositoryAdd(expectedAddedPost, expectedAddedPost);
+
+            await CreatePostShouldBe(createModel, true, null, expectedAddedPost);
+            await PostRepositoryAddShouldReceived(expectedAddedPost, 1);
+        }
+
         private void CreateBlogShouldBe(BlogCreateModel createModel, bool isSuccess, string errorMessage, Blog expectedBlog)
         {
             var actualResult = _service.CreateBlog(createModel);
