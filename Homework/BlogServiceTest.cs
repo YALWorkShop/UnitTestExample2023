@@ -151,6 +151,15 @@ namespace Homework
             await UpdatePostShouldBe(postId, updateModel, false, "請輸入文章標題與內容", null);
         }
 
+        [Test]
+        public async Task UpdatePost_ContentEmptyOrNull_Return_False_內容須超過10個字()
+        {
+            var postId = "post1";
+            var updateModel = new PostUpdateModel() { Title = "myTitle", Content = "10words" };
+
+            await UpdatePostShouldBe(postId, updateModel, false, "內容須超過 10 個字", null);
+        }
+
         private void CreateBlogShouldBe(BlogCreateModel createModel, bool isSuccess, string errorMessage, Blog expectedBlog)
         {
             var actualResult = _service.CreateBlog(createModel);
