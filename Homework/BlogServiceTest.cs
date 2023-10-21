@@ -128,7 +128,7 @@ namespace Homework
             await PostRepositoryAddShouldReceived(expectedAddedPost, 1);
 
             // make sure only call Add once
-            await _postRepository.Received(1).Add(Arg.Any<Post>());
+            await PostRepositoryAddWithAnyArgsShouldReceived(1);
         }
 
         private void CreateBlogShouldBe(BlogCreateModel createModel, bool isSuccess, string errorMessage, Blog expectedBlog)
@@ -206,6 +206,11 @@ namespace Homework
         private async Task PostRepositoryAddShouldReceived(Post post, int times)
         {
             await _postRepository.Received(times).Add(Arg.Is<Post>(p => p.ToExpectedObject().Equals(post)));
+        }
+
+        private async Task PostRepositoryAddWithAnyArgsShouldReceived(int times)
+        {
+            await _postRepository.Received(times).Add(Arg.Any<Post>());
         }
     }
 
