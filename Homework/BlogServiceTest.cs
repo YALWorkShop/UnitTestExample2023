@@ -178,6 +178,25 @@ namespace Homework
             await PostRepositoryUpdateShouldReceived(updatedPost, 1);
         }
 
+        [Test]
+        public async Task UpdatePost_PostRepositoryUpdate_success_Return_True_with_post()
+        {
+            var postId = "post1";
+            var updateModel = new PostUpdateModel() { Title = "myTitle", Content = "exceed 10 words" };
+            var updateException = new Exception("update fail");
+
+            var originalPost = GeneratePost("post1", "old title", "old content is here", new DateTime(2023, 9, 30), new DateTime(2023, 9, 30));
+            var updatedPost = GeneratePost("post1", "myTitle", "exceed 10 words", new DateTime(2023, 9, 30), fakeNow);
+
+            GivenPostRepositoryGetById(postId, originalPost);
+            GivenNow(fakeNow);
+            GivenPostRepositoryUpdate(updatedPost, updatedPost);
+
+            await UpdatePostShouldBe(postId, updateModel, true, null, updatedPost);
+            await PostRepositoryGetByIdShouldReceived(postId, 1);
+            await PostRepositoryUpdateShouldReceived(updatedPost, 1);
+        }
+
         private void CreateBlogShouldBe(BlogCreateModel createModel, bool isSuccess, string errorMessage, Blog expectedBlog)
         {
             var actualResult = _service.CreateBlog(createModel);
@@ -256,7 +275,7 @@ namespace Homework
 
         private void GivenPostRepositoryAdd(Post addedPost, Post returnPost)
         {
-            _postRepository.Add(Arg.Is<Post>(p => addedPost.ToExpectedObject().Equals(p))).Returns(Task.FromResult<Post>(returnPost));
+            _postRepository.Add(Arg.Is<Post>(p => addedPost.ToExpectedObject().Equals(p))).Returns(Task.FromResult(returnPost));
         }
 
         private void GivenPostRepositoryGetById(string id, Post post)
@@ -267,6 +286,11 @@ namespace Homework
         private void GivenPostRepositoryUpdateThrow(Post updatedPost, Exception exception)
         {
             _postRepository.Update(Arg.Is<Post>(p => updatedPost.ToExpectedObject().Equals(p))).Throws(exception);
+        }
+
+        private void GivenPostRepositoryUpdate(Post updatedPost, Post returnPost)
+        {
+            _postRepository.Update(Arg.Is<Post>(p => updatedPost.ToExpectedObject().Equals(p))).Returns(Task.FromResult(returnPost));
         }
 
         private Post GeneratePost(string id, string title, string content, DateTime createTime, DateTime updateTime)
