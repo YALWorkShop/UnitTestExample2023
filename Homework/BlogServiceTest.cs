@@ -131,6 +131,16 @@ namespace Homework
             await PostRepositoryAddWithAnyArgsShouldReceived(1);
         }
 
+        [TestCase("")]
+        [TestCase(null)]
+        public async Task UpdatePost_TitleEmptyOrNull_Return_False_請輸入文章標題與內容(string title)
+        {
+            var postId = "post1";
+            var updateModel = new PostUpdateModel() { Title = title };
+
+            await UpdatePostShouldBe(postId, updateModel, false, "請輸入文章標題與內容", null);
+        }
+
         private void CreateBlogShouldBe(BlogCreateModel createModel, bool isSuccess, string errorMessage, Blog expectedBlog)
         {
             var actualResult = _service.CreateBlog(createModel);
@@ -162,6 +172,20 @@ namespace Homework
         private async Task CreatePostShouldBe(PostCreateModel createModel, bool isSuccess, string errorMessage, Post expectedPost)
         {
             var actualResult = await _service.CreatePost(createModel);
+
+            var expectedResult = new ServiceResult<Post>
+            {
+                IsSuccess = isSuccess,
+                ErrorMessage = errorMessage,
+                Result = expectedPost
+            };
+
+            Assert.IsTrue(expectedResult.ToExpectedObject().Equals(actualResult));
+        }
+
+        private async Task UpdatePostShouldBe(string id, PostUpdateModel updateModel, bool isSuccess, string errorMessage, Post expectedPost)
+        {
+            var actualResult = await _service.UpdatePost(id, updateModel);
 
             var expectedResult = new ServiceResult<Post>
             {
