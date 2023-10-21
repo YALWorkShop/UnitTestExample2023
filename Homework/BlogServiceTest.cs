@@ -139,7 +139,7 @@ namespace Homework
         }
 
         [Test]
-        public async Task UpdatePost_ContentEmptyOrNull_Return_False_內容須超過10個字()
+        public async Task UpdatePost_ContentLessThan10words_Return_False_內容須超過10個字()
         {
             var postId = "post1";
             var updateModel = new PostUpdateModel() { Title = "myTitle", Content = "10words" };
@@ -160,7 +160,7 @@ namespace Homework
         }
 
         [Test]
-        public async Task UpdatePost_PostRepositoryUpdate_fail_Return_False_exception_message()
+        public async Task UpdatePost_PostRepositoryUpdateFail_Return_False_exception_message()
         {
             var postId = "post1";
             var updateModel = new PostUpdateModel() { Title = "myTitle", Content = "exceed 10 words" };
@@ -179,11 +179,10 @@ namespace Homework
         }
 
         [Test]
-        public async Task UpdatePost_PostRepositoryUpdate_success_Return_True_with_post()
+        public async Task UpdatePost_PostRepositoryUpdateSuccess_Return_True_with_post()
         {
             var postId = "post1";
             var updateModel = new PostUpdateModel() { Title = "myTitle", Content = "exceed 10 words" };
-            var updateException = new Exception("update fail");
 
             var originalPost = GeneratePost("post1", "old title", "old content is here", new DateTime(2023, 9, 30), new DateTime(2023, 9, 30));
             var updatedPost = GeneratePost("post1", "myTitle", "exceed 10 words", new DateTime(2023, 9, 30), fakeNow);
@@ -293,7 +292,7 @@ namespace Homework
             _postRepository.Update(Arg.Is<Post>(p => updatedPost.ToExpectedObject().Equals(p))).Returns(Task.FromResult(returnPost));
         }
 
-        private Post GeneratePost(string id, string title, string content, DateTime createTime, DateTime updateTime)
+        private static Post GeneratePost(string id, string title, string content, DateTime createTime, DateTime updateTime)
         {
             return new Post
             {
