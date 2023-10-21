@@ -87,8 +87,7 @@ namespace Homework
         [Test]
         public async Task CreatePost_PostRepositoryAddFail_Return_False_文章發佈失敗()
         {
-            // wrong logic: should be GivenPostId
-            GivenBlogId("post1");
+            GivenPostId("post1");
             GivenNow(fakeNow);
 
             var createModel = new PostCreateModel() { Title = "myTitle", Content = "exceed 10 words" };
