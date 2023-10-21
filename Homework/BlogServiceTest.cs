@@ -160,6 +160,17 @@ namespace Homework
             await UpdatePostShouldBe(postId, updateModel, false, "內容須超過 10 個字", null);
         }
 
+        [Test]
+        public async Task UpdatePost_Post_not_exist_Return_False_查無資料()
+        {
+            var postId = "post1";
+            var updateModel = new PostUpdateModel() { Title = "myTitle", Content = "exceed 10 words" };
+
+            _postRepository.GetById(postId).Returns(Task.FromResult<Post>(null));
+            await UpdatePostShouldBe(postId, updateModel, false, "查無資料", null);
+            await _postRepository.Received(1).GetById(postId);
+        }
+
         private void CreateBlogShouldBe(BlogCreateModel createModel, bool isSuccess, string errorMessage, Blog expectedBlog)
         {
             var actualResult = _service.CreateBlog(createModel);
