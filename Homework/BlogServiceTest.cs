@@ -9,6 +9,7 @@ namespace Homework
     {
         FakeBlogService _service;
         IPostRepository _postRepository;
+        DateTime fakeNow = new DateTime(2023, 10, 01, 10, 0, 0);
 
         [SetUp]
         public void SetUp()
@@ -83,6 +84,29 @@ namespace Homework
             await CreatePostShouldBe(createModel, false, "內容須超過 10 個字", null);
         }
 
+        [Test]
+        public async Task CreatePost_PostRepositoryAddFail_Return_False_文章發佈失敗()
+        {
+            // wrong logic: should be GivenPostId
+            GivenBlogId("post1");
+            GivenNow(fakeNow);
+
+            var createModel = new PostCreateModel() { Title = "myTitle", Content = "exceed 10 words" };
+
+            var expectedAddedPost = new Post()
+            {
+                Id = "post1",
+                Title = "myTitle",
+                Content = "exceed 10 words",
+                CreatTime = fakeNow,
+                UpdateTime = fakeNow
+            };
+
+            // if setting wrong(or not set), postRepository.Add always return null
+             _postRepository.Add(Arg.Is<Post>(p => p.ToExpectedObject().Equals(expectedAddedPost))).Returns(Task.FromResult<Post>(null));
+            await CreatePostShouldBe(createModel, false, "文章發佈失敗", null);
+        }
+
         private void CreateBlogShouldBe(BlogCreateModel createModel, bool isSuccess, string errorMessage, Blog expectedBlog)
         {
             var actualResult = _service.CreateBlog(createModel);
@@ -111,7 +135,7 @@ namespace Homework
             Assert.IsTrue(expectedResult.ToExpectedObject().Equals(actualResult));
         }
 
-        private async Task CreatePostShouldBe(PostCreateModel createModel ,bool isSuccess, string errorMessage, Post expectedPost)
+        private async Task CreatePostShouldBe(PostCreateModel createModel, bool isSuccess, string errorMessage, Post expectedPost)
         {
             var actualResult = await _service.CreatePost(createModel);
 
@@ -130,6 +154,16 @@ namespace Homework
             _service.SetBlogId(blogId);
         }
 
+        private void GivenPostId(string postId)
+        {
+            _service.SetPostId(postId);
+        }
+
+        private void GivenNow(DateTime now)
+        {
+            _service.SetNow(now);
+        }
+
         private void GivenPostRepositoryGetAll(List<Post> posts)
         {
             _postRepository.GetAll().Returns(Task.FromResult(posts));
@@ -144,6 +178,8 @@ namespace Homework
     public class FakeBlogService : BlogService
     {
         private string _blogId;
+        private string _postId;
+        private DateTime _now;
 
         public FakeBlogService(IPostRepository postRepository) : base(postRepository)
         {
@@ -154,9 +190,29 @@ namespace Homework
             _blogId = blogId;
         }
 
+        public void SetPostId(string postId)
+        {
+            _postId = postId;
+        }
+
+        public void SetNow(DateTime now)
+        {
+            _now = now;
+        }
+
         protected override string GetBlogId()
         {
             return _blogId;
+        }
+
+        protected override string GetPostId()
+        {
+            return _postId;
+        }
+
+        protected override DateTime GetNow()
+        {
+            return _now;
         }
     }
 }

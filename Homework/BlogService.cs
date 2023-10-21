@@ -66,8 +66,8 @@ namespace Homework
                 Id = GetPostId(),
                 Title = postCreateModel.Title,
                 Content = postCreateModel.Content,
-                CreatTime = DateTime.Now,
-                UpdateTime = DateTime.Now
+                CreatTime = GetNow(),
+                UpdateTime = GetNow()
             };
 
             var createResult = await _postRepository.Add(newPost);
@@ -86,6 +86,11 @@ namespace Homework
                 IsSuccess = true,
                 Result = createResult
             };
+        }
+
+        protected virtual DateTime GetNow()
+        {
+            return DateTime.Now;
         }
 
         protected virtual string GetPostId()
