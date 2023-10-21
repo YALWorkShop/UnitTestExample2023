@@ -171,11 +171,11 @@ namespace Homework
 
             GivenPostRepositoryGetById(postId, originalPost);
             GivenNow(fakeNow);
-            _postRepository.Update(Arg.Is<Post>(p => updatedPost.ToExpectedObject().Equals(p))).Throws(updateException);
+            GivenPostRepositoryUpdateThrow(updatedPost, updateException);
 
             await UpdatePostShouldBe(postId, updateModel, false, "update fail", null);
             await PostRepositoryGetByIdShouldReceived(postId, 1);
-            await _postRepository.Received(1).Update(Arg.Is<Post>(p => updatedPost.ToExpectedObject().Equals(p)));
+            await PostRepositoryUpdateShouldReceived(updatedPost, 1);
         }
 
         private void CreateBlogShouldBe(BlogCreateModel createModel, bool isSuccess, string errorMessage, Blog expectedBlog)
@@ -262,6 +262,11 @@ namespace Homework
         private void GivenPostRepositoryGetById(string id, Post post)
         {
             _postRepository.GetById(id).Returns(Task.FromResult(post));
+        }
+
+        private void GivenPostRepositoryUpdateThrow(Post updatedPost, Exception exception)
+        {
+            _postRepository.Update(Arg.Is<Post>(p => updatedPost.ToExpectedObject().Equals(p))).Throws(exception);
         }
 
         private Post GeneratePost(string id, string title, string content, DateTime createTime, DateTime updateTime)
