@@ -81,42 +81,53 @@ namespace Homework
 
         public async Task<ServiceResult<Post>> UpdatePost(string id, PostUpdateModel postUpdateModel)
         {
-            if (string.IsNullOrEmpty(postUpdateModel.Title) || string.IsNullOrEmpty(postUpdateModel.Content))
+            try
+            {
+                if (string.IsNullOrEmpty(postUpdateModel.Title) || string.IsNullOrEmpty(postUpdateModel.Content))
+                {
+                    return new ServiceResult<Post>
+                    {
+                        IsSuccess = false,
+                        ErrorMessage = "請輸入文章標題與內容"
+                    };
+                }
+
+                if (postUpdateModel.Content.Length <= 10)
+                {
+                    return new ServiceResult<Post>
+                    {
+                        IsSuccess = false,
+                        ErrorMessage = "內容須超過 10 個字"
+                    };
+                }
+
+                var repository = new PostRepository();
+                var post = await repository.GetById(id);
+                if (post == null)
+                {
+                    throw new Exception("查無資料");
+                }
+
+                post.Title = postUpdateModel.Title;
+                post.Content = postUpdateModel.Content;
+                post.UpdateTime = DateTime.Now;
+
+                var updateResult = await repository.Update(post);
+
+                return new ServiceResult<Post>
+                {
+                    IsSuccess = true,
+                    Result = updateResult
+                };
+            }
+            catch (Exception ex)
             {
                 return new ServiceResult<Post>
                 {
                     IsSuccess = false,
-                    ErrorMessage = "請輸入文章標題與內容"
+                    ErrorMessage = ex.Message
                 };
             }
-
-            if (postUpdateModel.Content.Length <= 10)
-            {
-                return new ServiceResult<Post>
-                {
-                    IsSuccess = false,
-                    ErrorMessage = "內容須超過 10 個字"
-                };
-            }
-
-            var repository = new PostRepository();
-            var post = await repository.GetById(id);
-            if (post == null)
-            {
-                throw new Exception("查無資料");
-            }
-
-            post.Title = postUpdateModel.Title;
-            post.Content = postUpdateModel.Content;
-            post.UpdateTime = DateTime.Now;
-
-            var updateResult = await repository.Update(post);
-
-            return new ServiceResult<Post>
-            {
-                IsSuccess = true,
-                Result = updateResult
-            };
         }
     }
 }
