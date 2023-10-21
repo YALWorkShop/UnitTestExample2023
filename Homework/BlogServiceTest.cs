@@ -87,9 +87,6 @@ namespace Homework
         [Test]
         public async Task CreatePost_PostRepositoryAddFail_Return_False_文章發佈失敗()
         {
-            GivenPostId("post1");
-            GivenNow(fakeNow);
-
             var createModel = new PostCreateModel() { Title = "myTitle", Content = "exceed 10 words" };
 
             var expectedAddedPost = new Post()
@@ -101,10 +98,12 @@ namespace Homework
                 UpdateTime = fakeNow
             };
 
-            // if setting wrong(or not set), postRepository.Add always return null
-             _postRepository.Add(Arg.Is<Post>(p => p.ToExpectedObject().Equals(expectedAddedPost))).Returns(Task.FromResult<Post>(null));
+            GivenPostId("post1");
+            GivenNow(fakeNow);
+            GivenPostRepositoryAdd(expectedAddedPost, null);
+
             await CreatePostShouldBe(createModel, false, "文章發佈失敗", null);
-            await _postRepository.Received(1).Add(Arg.Is<Post>(p => p.ToExpectedObject().Equals(expectedAddedPost)));
+            await PostRepositoryAddShouldReceived(expectedAddedPost, 1);
         }
 
         private void CreateBlogShouldBe(BlogCreateModel createModel, bool isSuccess, string errorMessage, Blog expectedBlog)
@@ -169,9 +168,19 @@ namespace Homework
             _postRepository.GetAll().Returns(Task.FromResult(posts));
         }
 
+        private void GivenPostRepositoryAdd(Post addedPost, Post returnPost)
+        {
+            _postRepository.Add(Arg.Is<Post>(p => p.ToExpectedObject().Equals(addedPost))).Returns(Task.FromResult<Post>(returnPost));
+        }
+
         private async Task PostRepositoryGetAllShouldReceived(int times)
         {
             await _postRepository.Received(times).GetAll();
+        }
+
+        private async Task PostRepositoryAddShouldReceived(Post post, int times)
+        {
+            await _postRepository.Received(times).Add(Arg.Is<Post>(p => p.ToExpectedObject().Equals(post)));
         }
     }
 
