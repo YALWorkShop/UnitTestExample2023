@@ -126,6 +126,9 @@ namespace Homework
 
             await CreatePostShouldBe(createModel, true, null, expectedAddedPost);
             await PostRepositoryAddShouldReceived(expectedAddedPost, 1);
+
+            // make sure only call Add once
+            await _postRepository.Received(1).Add(Arg.Any<Post>());
         }
 
         private void CreateBlogShouldBe(BlogCreateModel createModel, bool isSuccess, string errorMessage, Blog expectedBlog)
