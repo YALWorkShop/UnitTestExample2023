@@ -166,9 +166,10 @@ namespace Homework
             var postId = "post1";
             var updateModel = new PostUpdateModel() { Title = "myTitle", Content = "exceed 10 words" };
 
-            _postRepository.GetById(postId).Returns(Task.FromResult<Post>(null));
+            GivenPostRepositoryGetById(postId, null);
+
             await UpdatePostShouldBe(postId, updateModel, false, "查無資料", null);
-            await _postRepository.Received(1).GetById(postId);
+            await PostRepositoryGetByIdShouldReceived(postId, 1);
         }
 
         private void CreateBlogShouldBe(BlogCreateModel createModel, bool isSuccess, string errorMessage, Blog expectedBlog)
@@ -249,7 +250,12 @@ namespace Homework
 
         private void GivenPostRepositoryAdd(Post addedPost, Post returnPost)
         {
-            _postRepository.Add(Arg.Is<Post>(p => p.ToExpectedObject().Equals(addedPost))).Returns(Task.FromResult<Post>(returnPost));
+            _postRepository.Add(Arg.Is<Post>(p => addedPost.ToExpectedObject().Equals(p))).Returns(Task.FromResult<Post>(returnPost));
+        }
+
+        private void GivenPostRepositoryGetById(string id, Post post)
+        {
+            _postRepository.GetById(id).Returns(Task.FromResult(post));
         }
 
         private async Task PostRepositoryGetAllShouldReceived(int times)
@@ -259,12 +265,17 @@ namespace Homework
 
         private async Task PostRepositoryAddShouldReceived(Post post, int times)
         {
-            await _postRepository.Received(times).Add(Arg.Is<Post>(p => p.ToExpectedObject().Equals(post)));
+            await _postRepository.Received(times).Add(Arg.Is<Post>(p => post.ToExpectedObject().Equals(p)));
         }
 
         private async Task PostRepositoryAddWithAnyArgsShouldReceived(int times)
         {
             await _postRepository.Received(times).Add(Arg.Any<Post>());
+        }
+
+        private async Task PostRepositoryGetByIdShouldReceived(string id, int times)
+        {
+            await _postRepository.Received(times).GetById(id);
         }
     }
 
