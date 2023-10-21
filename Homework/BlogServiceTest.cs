@@ -105,6 +105,7 @@ namespace Homework
             // if setting wrong(or not set), postRepository.Add always return null
              _postRepository.Add(Arg.Is<Post>(p => p.ToExpectedObject().Equals(expectedAddedPost))).Returns(Task.FromResult<Post>(null));
             await CreatePostShouldBe(createModel, false, "文章發佈失敗", null);
+            await _postRepository.Received(1).Add(Arg.Is<Post>(p => p.ToExpectedObject().Equals(expectedAddedPost)));
         }
 
         private void CreateBlogShouldBe(BlogCreateModel createModel, bool isSuccess, string errorMessage, Blog expectedBlog)
