@@ -25,11 +25,6 @@ namespace Homework
             };
         }
 
-        protected virtual string GetBlogId()
-        {
-            return Guid.NewGuid().ToString("N");
-        }
-
         public async Task<ServiceResult<List<Post>>> GetAllPosts()
         {
             var allPosts = await _postRepository.GetAll() ?? new List<Post>();
@@ -88,16 +83,6 @@ namespace Homework
             };
         }
 
-        protected virtual DateTime GetNow()
-        {
-            return DateTime.Now;
-        }
-
-        protected virtual string GetPostId()
-        {
-            return Guid.NewGuid().ToString("N");
-        }
-
         public async Task<ServiceResult<Post>> UpdatePost(string id, PostUpdateModel postUpdateModel)
         {
             try
@@ -147,5 +132,21 @@ namespace Homework
                 };
             }
         }
+
+        protected virtual string GetBlogId()
+        {
+            return Guid.NewGuid().ToString("N");
+        }
+
+        protected virtual DateTime GetNow()
+        {
+            return DateTime.Now;
+        }
+
+        protected virtual string GetPostId()
+        {
+            return Guid.NewGuid().ToString("N");
+        }
+
     }
 }
